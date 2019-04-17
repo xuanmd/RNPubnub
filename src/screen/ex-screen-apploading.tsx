@@ -43,10 +43,8 @@ class AppLoadingScreen extends React.Component<IProps, any> {
       const value = await AsyncStorage.getItem(
         ChatEngineProvider.ASYNC_STORAGE_USERDATA_KEY
       );
-      // console.log(value);
       if (value) {
         const json = JSON.parse(value);
-
         if (!json.username || !json.name) {
           return;
         }
@@ -57,7 +55,18 @@ class AppLoadingScreen extends React.Component<IProps, any> {
           json.url,
           json.objectId
         ).then(() => {
-          this.props.navigation.navigate('ChatList', {});
+          ChatEngineProvider.getChatRoomModel()
+            .connect('Lobby', false, null)
+            .then(
+              () => {
+                this.props.navigation.navigate('UserList', {
+                  title: '#Lobby'
+                });
+              },
+              reject => {
+                alert(reject);
+              }
+            );
         });
       }
     } catch (error) {

@@ -25,12 +25,10 @@ class UserListModel extends Updateable {
 
     this.presenceOnlineHandler = newUser => {
       let newUserUuid = newUser.user.uuid;
-      // console.log('join', newUserUuid);
       let user = self.makeUser(newUserUuid, newUser.user.state);
 
       let userList = { ...self.state.userList };
       userList[newUserUuid] = user;
-      // userList[newUserUuid].online = true;
 
       self.state = { userList };
       self.fireStateChange();
@@ -40,7 +38,6 @@ class UserListModel extends Updateable {
       let offlineUserUuid = data.user.uuid;
       let userList = { ...self.state.userList };
       if (userList[offlineUserUuid]) {
-        // userList[offlineUserUuid].online = false;
         delete userList[offlineUserUuid];
       }
 
@@ -56,7 +53,6 @@ class UserListModel extends Updateable {
   }
 
   connect(chat) {
-    console.log('connecting');
     this.clear();
 
     chat.on('$.online.*', this.presenceOnlineHandler);

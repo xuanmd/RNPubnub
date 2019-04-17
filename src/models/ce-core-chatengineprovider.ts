@@ -18,7 +18,9 @@ class ChatEngineProvider {
   static _username = null;
   static _uuid = null;
   static _name = null;
+  static _supportRoom = [];
   static _chatRoomModel = new ChatRoomModel();
+  // static _supportChatRoomModel = new ChatRoomModel();
   static _connected = false;
   static _chatEngine = ChatEngineProvider.__createChatEngine();
 
@@ -40,24 +42,34 @@ class ChatEngineProvider {
 
     ChatEngineProvider._username = username;
     ChatEngineProvider._name = name || username;
-    // ChatEngineProvider._uuid = sha1(username);
     ChatEngineProvider._uuid = objectId; //use user objectId to create uuid
 
     ChatEngineProvider._chatEngine = ChatEngineProvider.__createChatEngine();
 
-    ChatEngineProvider._chatEngine.connect(
-      ChatEngineProvider._uuid,
-      {
-        name: ChatEngineProvider._name,
-        email: ChatEngineProvider._username,
-        avatar_url: image_url, //image_url of user
-        signedOnTime: new Date().getTime()
-      },
-      'auth-key'
-    );
+    ChatEngineProvider._chatEngine.connect(ChatEngineProvider._uuid, {
+      name: ChatEngineProvider._name,
+      email: ChatEngineProvider._username,
+      avatar_url: image_url, //image_url of user
+      signedOnTime: new Date().getTime()
+    });
 
     var engineReady = new Promise(resolve => {
       ChatEngineProvider._chatEngine.once('$.ready', data => {
+        const me = data.me;
+        me.direct.on('$.invite', payload => {
+          //listen the invite from user need support
+          const isExist = ChatEngineProvider._supportRoom.includes(
+            payload.data.channel
+          );
+          if (isExist) {
+            //ignore if channel existed
+          } else {
+            ChatEngineProvider._supportRoom = ChatEngineProvider._supportRoom.concat(
+              [payload.data.channel as string]
+            );
+          }
+        });
+
         ChatEngineProvider._connected = true;
         resolve(true);
       });
@@ -71,6 +83,7 @@ class ChatEngineProvider {
       ChatEngineProvider.ASYNC_STORAGE_USERDATA_KEY
     ).then(() => {
       ChatEngineProvider._chatRoomModel.disconnect();
+      // ChatEngineProvider._supportChatRoomModel.disconnect();
 
       //
       // FIXME - this isn't implemented but it should be?
@@ -83,12 +96,16 @@ class ChatEngineProvider {
       ChatEngineProvider._username = null;
       ChatEngineProvider._name = null;
       ChatEngineProvider._uuid = null;
+      ChatEngineProvider._supportRoom = [];
       ChatEngineProvider._chatRoomModel = new ChatRoomModel();
+      // ChatEngineProvider._supportChatRoomModel = new ChatRoomModel();
       ChatEngineProvider._connected = false;
       ChatEngineProvider._chatEngine = null;
     });
   }
-
+  static getSupportChatRoomModel() {
+    // return this._supportChatRoomModel;
+  }
   static getChatRoomModel() {
     return this._chatRoomModel;
   }

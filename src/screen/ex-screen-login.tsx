@@ -38,10 +38,6 @@ class LoginScreen extends React.Component<IProps, any> {
       'https://images.pexels.com/photos/414612/pexels-photo-414612.jpeg?auto=compress&cs=tinysrgb&dpr=3&h=750&w=1260';
     this._objectId = '';
   }
-  //login to debug
-  componentDidMount() {
-    // this._onButtonPress();
-  }
   _onButtonPress = () => {
     var self = this;
 
@@ -68,8 +64,20 @@ class LoginScreen extends React.Component<IProps, any> {
       } catch (error) {
         // ignore error, this save is just for convenience
       }
-
-      this.props.navigation.navigate('ChatList', {});
+      //ignore ChatList Screen, connect directly to Lobby room
+      // this.props.navigation.navigate('ChatList', {});
+      ChatEngineProvider.getChatRoomModel()
+        .connect('Lobby', false, null)
+        .then(
+          () => {
+            self.props.navigation.navigate('Application', {
+              title: '#Lobby'
+            });
+          },
+          reject => {
+            alert(reject);
+          }
+        );
     });
   };
 

@@ -13,6 +13,7 @@ import typingIndicator from 'chat-engine-typing-indicator';
 class ChatRoomModel {
   props: any;
   state: any;
+  privateState: any;
   constructor() {
     this.props = {
       messageListModel: new MessageListModel(),
@@ -60,7 +61,7 @@ class ChatRoomModel {
     this.props.userListModel.refresh(component);
   }
 
-  connect(channelFriendly) {
+  connect(channelFriendly, isPrivate, withPersonUUID) {
     if (this.state && channelFriendly === this.state.channelFriendly) {
       return new Promise(resolve => {
         resolve(true);
@@ -71,20 +72,19 @@ class ChatRoomModel {
 
     if (this.state && this.state.channel) {
       let prevChat = ChatEngine.chats[this.state.channel];
-
       if (prevChat) {
         this.disconnect();
       }
     }
 
-    const chat = new ChatEngine.Chat(channelFriendly);
+    const chat = new ChatEngine.Chat(channelFriendly, isPrivate, true);
+
+    if (withPersonUUID !== null) {
+      let person = ChatEngine.users[withPersonUUID];
+      chat.invite(person);
+    }
+
     chat.plugin(typingIndicator({ timeout: 5000 }));
-
-    // uncomment to ENABLE markdown plugin
-    // chat.plugin(markdown());
-
-    // uncomment to ENABLE emoji plugin
-    // chat.plugin(emoji());
 
     var self = this;
 

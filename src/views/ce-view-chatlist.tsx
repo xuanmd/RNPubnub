@@ -40,31 +40,31 @@ class ChatList extends React.Component<IProps, IState> {
     };
   }
 
-  refresh() {
-    let ChatEngine = ChatEngineProvider.get();
-    let state = this.emptyState();
-    //FIXME: figure out error
-    if (ChatEngine && ChatEngine.chats) {
-      Object.keys(ChatEngine.chats).forEach(x => {
-        if (x.indexOf(ChatList.PUBLIC_CHANNEL_PREFIX) === 0) {
-          let friendly = x.substring(ChatList.PUBLIC_CHANNEL_PREFIX);
-          state.channels[friendly] = {};
-        }
-      });
-    }
+  // refresh() {
+  //   let ChatEngine = ChatEngineProvider.get();
+  //   let state = this.emptyState();
+  //   //FIXME: figure out error
+  //   if (ChatEngine && ChatEngine.chats) {
+  //     Object.keys(ChatEngine.chats).forEach(x => {
+  //       if (x.indexOf(ChatList.PUBLIC_CHANNEL_PREFIX) === 0) {
+  //         let friendly = x.substring(ChatList.PUBLIC_CHANNEL_PREFIX);
+  //         state.channels[friendly] = {};
+  //       }
+  //     });
+  //   }
 
-    this.setState(() => {
-      return state;
-    });
-  }
+  //   this.setState(() => {
+  //     return state;
+  //   });
+  // }
 
-  componentDidMount() {
-    var self = this;
+  // componentDidMount() {
+  //   var self = this;
 
-    this._sub = this.props.navigation.addListener('didFocus', () => {
-      self.refresh();
-    });
-  }
+  //   this._sub = this.props.navigation.addListener('didFocus', () => {
+  //     self.refresh();
+  //   });
+  // }
 
   componentWillUnmount() {
     this._sub.remove();

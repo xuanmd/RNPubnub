@@ -24,8 +24,30 @@ import { NavigationInjectedProps } from 'react-navigation';
 type IProps = NavigationInjectedProps;
 
 class ChatRoom extends React.Component<IProps, any> {
+  static navigationOptions = ({ navigation }) => {
+    const { params = {} } = navigation.state;
+    return {
+      headerLeft: <Button title='Back' onPress={params.handleBack} />
+    };
+  };
+
   constructor(props) {
     super(props);
+  }
+  componentDidMount() {
+    this.props.navigation.setParams({
+      handleBack: this.handleBack.bind(this)
+    });
+  }
+  handleBack() {
+    this.props.navigation.goBack();
+    // const self = this;
+    // ChatEngineProvider.getChatRoomModel()
+    //   .connect('Lobby', false, null)
+    //   .then(() => {
+    //     console.log('connect success');
+    //     self.props.navigation.navigate('UserList');
+    //   });
   }
 
   renderContents() {

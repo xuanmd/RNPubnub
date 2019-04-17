@@ -12,7 +12,7 @@ import AppLoadingScreen from './src/screen/ex-screen-apploading';
 const MainNavigator = createSwitchNavigator({
   AppLoading: AppLoadingScreen,
   Login: LoginScreen,
-  ChatList: ChatListScreen,
+  // ChatList: ChatListScreen,
   Application: TabNavigator
 });
 const Navigator = createAppContainer(MainNavigator);

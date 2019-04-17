@@ -11,14 +11,13 @@ import { NavigationInjectedProps } from 'react-navigation';
 type IProps = NavigationInjectedProps;
 class UserListScreen extends React.Component<IProps, any> {
   static navigationOptions = {
-    tabBarLabel: 'Foo Bar Baz',
+    tabBarLabel: 'Users',
     tabBarIcon: () => <Icon name='people' size={26} color='white' />
   };
 
   render() {
     const chatRoomModel = ChatEngineProvider.getChatRoomModel();
     let self = this;
-
     return (
       <SafeAreaView style={[styles.container, { flex: 1 }]}>
         {!chatRoomModel ||
